@@ -1,0 +1,5 @@
+cluster,age,total_spend,total_children,tenure_years,number_complaints,distinct_stores_visited,percentage_of_products_bought_promotion,lifetime_spend_groceries,lifetime_spend_electronics,lifetime_spend_meat,lifetime_spend_fish,lifetime_spend_videogames,lifetime_spend_petfood,lifetime_spend_alcohol_drinks,size,pct
+0,50.1,17980.8,1.5,8.1,1.0,3.2,0.4,13489.4,1057.7,711.1,527.8,202.2,332.3,437.4,15068,45.6
+1,54.9,22825.4,0.7,6.9,1.1,1.6,0.3,7860.4,9566.1,909.0,856.0,1446.4,306.9,1072.5,3591,10.9
+2,55.5,17214.6,1.9,8.4,0.7,3.4,0.1,11200.0,1446.6,121.1,106.6,191.5,335.1,297.0,7099,21.5
+3,56.2,41906.4,3.7,11.1,1.0,3.6,0.3,31281.7,4215.8,1245.3,1141.1,375.7,359.7,1099.5,7280,22.0
