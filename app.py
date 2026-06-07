@@ -4,7 +4,7 @@ Run with: streamlit run app.py
 """
 import os
 import sys
- 
+
 import matplotlib
 matplotlib.use("Agg")
 import numpy as np
@@ -13,7 +13,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
 from plotly.subplots import make_subplots
- 
+
 sys.path.insert(0, os.path.dirname(__file__))
 from src.preprocessing import load_customer_info, preprocess_for_clustering
 from src.clustering import (
@@ -21,7 +21,7 @@ from src.clustering import (
     cluster_profiles, describe_clusters,
 )
 from src.association import load_basket, rules_per_cluster
- 
+
 # ── page config ───────────────────────────────────────────────────────────────
 st.set_page_config(
     page_title="Customer Segmentation",
@@ -29,9 +29,9 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded",
 )
- 
+
 DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
- 
+
 # ── colour tokens ─────────────────────────────────────────────────────────────
 BG         = "#0d1117"
 SURFACE    = "#161b22"
@@ -40,7 +40,7 @@ BORDER     = "#30363d"
 TEXT       = "#e6edf3"
 MUTED      = "#8b949e"
 ACCENT     = "#58a6ff"
- 
+
 PERSONAS = {
     0: {
         "label":  "Tech-Savvy Singles",
@@ -118,21 +118,21 @@ PERSONAS = {
         ],
     },
 }
- 
+
 COLOR_MAP = {PERSONAS[i]["label"]: PERSONAS[i]["color"] for i in range(5)}
- 
+
 # ── CSS ───────────────────────────────────────────────────────────────────────
 st.markdown(f"""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap');
- 
+
 /* ════════════════════════════════════════════
    BASE
 ════════════════════════════════════════════ */
 html, body, [class*="css"] {{
     font-family: 'IBM Plex Sans', sans-serif !important;
 }}
- 
+
 .stApp, [data-testid="stAppViewContainer"] {{
     background-color: {BG} !important;
 }}
@@ -146,7 +146,7 @@ html, body, [class*="css"] {{
 }}
 #MainMenu, footer {{ visibility: hidden; }}
 .stDeployButton {{ display: none !important; }}
- 
+
 /* ════════════════════════════════════════════
    SIDEBAR
 ════════════════════════════════════════════ */
@@ -157,18 +157,13 @@ html, body, [class*="css"] {{
 [data-testid="stSidebar"] .block-container {{
     padding: 2rem 1.25rem !important;
 }}
- 
+
 /* ════════════════════════════════════════════
    TYPOGRAPHY  —  strict scale
 ════════════════════════════════════════════ */
-/* page title set via HTML helper — no override needed */
- 
-/* all native st.write / st.markdown paragraphs */
 p, span, div, label {{ color: {TEXT} !important; }}
- 
-/* section group heading (st.markdown h3 not used — all via helpers) */
 h1, h2, h3, h4 {{ color: {TEXT} !important; }}
- 
+
 /* ════════════════════════════════════════════
    METRIC CARDS
 ════════════════════════════════════════════ */
@@ -199,7 +194,7 @@ h1, h2, h3, h4 {{ color: {TEXT} !important; }}
 [data-testid="stMetricDelta"] {{
     font-size: 0.72rem !important;
 }}
- 
+
 /* ════════════════════════════════════════════
    SELECTBOX
 ════════════════════════════════════════════ */
@@ -217,7 +212,7 @@ h1, h2, h3, h4 {{ color: {TEXT} !important; }}
     border-radius: 7px !important;
 }}
 [data-baseweb="popover"] li:hover {{ background-color: {SURFACE} !important; }}
- 
+
 /* ════════════════════════════════════════════
    RADIO  (sidebar nav)
 ════════════════════════════════════════════ */
@@ -241,7 +236,7 @@ h1, h2, h3, h4 {{ color: {TEXT} !important; }}
     background: {SURFACE2} !important;
     font-weight: 500 !important;
 }}
- 
+
 /* ════════════════════════════════════════════
    BUTTONS
 ════════════════════════════════════════════ */
@@ -268,7 +263,7 @@ h1, h2, h3, h4 {{ color: {TEXT} !important; }}
 [data-testid="stDownloadButton"] > button:hover {{
     border-color: {ACCENT} !important;
 }}
- 
+
 /* ════════════════════════════════════════════
    NUMBER INPUT
 ════════════════════════════════════════════ */
@@ -281,7 +276,7 @@ h1, h2, h3, h4 {{ color: {TEXT} !important; }}
     color: {TEXT} !important;
     background-color: {SURFACE2} !important;
 }}
- 
+
 /* ════════════════════════════════════════════
    DATAFRAME
 ════════════════════════════════════════════ */
@@ -290,7 +285,7 @@ h1, h2, h3, h4 {{ color: {TEXT} !important; }}
     border-radius: 8px !important;
     overflow: hidden;
 }}
- 
+
 /* ════════════════════════════════════════════
    DIVIDER
 ════════════════════════════════════════════ */
@@ -299,7 +294,7 @@ hr {{
     border-top: 1px solid {BORDER} !important;
     margin: 2rem 0 !important;
 }}
- 
+
 /* ════════════════════════════════════════════
    ALERTS
 ════════════════════════════════════════════ */
@@ -309,17 +304,14 @@ hr {{
     border-radius: 0 7px 7px 0 !important;
 }}
 [data-testid="stAlert"] p {{ color: {TEXT} !important; }}
- 
+
 /* ════════════════════════════════════════════
    SPINNER
 ════════════════════════════════════════════ */
 [data-testid="stSpinner"] p {{ color: {MUTED} !important; }}
- 
+
 /* ════════════════════════════════════════════
    PLOTLY CHART CONTAINERS
-   — Streamlit wraps every st.plotly_chart in
-     an iframe-like element; we target the outer
-     div to give charts a card background.
 ════════════════════════════════════════════ */
 [data-testid="stPlotlyChart"] > div {{
     background: {SURFACE} !important;
@@ -328,18 +320,15 @@ hr {{
     padding: 0.25rem !important;
     overflow: hidden;
 }}
- 
-/* column gaps get extra breathing room */
+
 [data-testid="column"] {{ padding: 0 0.3rem !important; }}
- 
 </style>
 """, unsafe_allow_html=True)
- 
- 
+
+
 # ── html helpers ──────────────────────────────────────────────────────────────
- 
+
 def page_header(title, subtitle=""):
-    """Full-width page title with bottom border and optional subtitle."""
     sub = (
         f'<p style="margin:0.4rem 0 0;font-size:0.85rem;color:{MUTED};'
         f'font-weight:400;letter-spacing:0">{subtitle}</p>'
@@ -351,10 +340,9 @@ def page_header(title, subtitle=""):
         f'letter-spacing:-0.025em;line-height:1.15">{title}</h1>{sub}</div>',
         unsafe_allow_html=True,
     )
- 
- 
+
+
 def subsection_header(title, subtitle=""):
-    """Second-level heading used before a group of related charts."""
     sub = (
         f'<p style="margin:0.25rem 0 0;font-size:0.8rem;color:{MUTED}">{subtitle}</p>'
     ) if subtitle else ""
@@ -364,20 +352,18 @@ def subsection_header(title, subtitle=""):
         f'letter-spacing:-0.01em">{title}</p>{sub}</div>',
         unsafe_allow_html=True,
     )
- 
- 
+
+
 def section_label(text):
-    """Tiny all-caps eyebrow label above a single chart or group."""
     st.markdown(
         f'<p style="margin:0 0 0.55rem;font-size:0.67rem;font-weight:700;'
         f'text-transform:uppercase;letter-spacing:0.1em;color:{MUTED}55;'
         f'border-left:2px solid {MUTED}44;padding-left:0.5rem">{text}</p>',
         unsafe_allow_html=True,
     )
- 
- 
+
+
 def chart_card_open(label=""):
-    """Open a chart card container div. Call chart_card_close() after st.plotly_chart."""
     label_html = (
         f'<p style="margin:0 0 0.9rem;font-size:0.67rem;font-weight:700;'
         f'text-transform:uppercase;letter-spacing:0.1em;color:{MUTED}88;'
@@ -389,12 +375,12 @@ def chart_card_open(label=""):
         f'{label_html}',
         unsafe_allow_html=True,
     )
- 
- 
+
+
 def chart_card_close():
     st.markdown('</div>', unsafe_allow_html=True)
- 
- 
+
+
 def pill(label, color, bg):
     return (
         f'<span style="display:inline-block;background:{bg};color:{color};'
@@ -402,8 +388,8 @@ def pill(label, color, bg):
         f'font-weight:700;letter-spacing:0.07em;padding:0.2rem 0.6rem;'
         f'text-transform:uppercase;font-family:\'IBM Plex Mono\',monospace">{label}</span>'
     )
- 
- 
+
+
 def segment_card_overview(cid, row, persona):
     color = persona["color"]
     n     = int(row["size"])
@@ -413,13 +399,10 @@ def segment_card_overview(cid, row, persona):
         f'<div style="background:{SURFACE};border:1px solid {BORDER};'
         f'border-top:3px solid {color};border-radius:0 0 10px 10px;'
         f'padding:1.1rem 1.1rem 1.15rem;height:100%;transition:border-color 0.2s">'
-        # segment name
         f'<p style="margin:0 0 0.25rem;font-size:0.82rem;font-weight:600;'
         f'color:{TEXT};line-height:1.3;letter-spacing:-0.005em">{persona["label"]}</p>'
-        # stat line
         f'<p style="margin:0 0 1rem;font-size:0.69rem;color:{MUTED};line-height:1.45">'
         f'{persona["stat"]}</p>'
-        # numbers row
         f'<div style="display:flex;justify-content:space-between;align-items:flex-end">'
         f'<div>'
         f'<p style="margin:0;font-size:0.6rem;color:{MUTED};text-transform:uppercase;'
@@ -436,8 +419,8 @@ def segment_card_overview(cid, row, persona):
         f'</div></div></div>',
         unsafe_allow_html=True,
     )
- 
- 
+
+
 def campaign_card(campaign, rationale, color, idx):
     st.markdown(
         f'<div style="background:{SURFACE};border:1px solid {BORDER};'
@@ -455,8 +438,8 @@ def campaign_card(campaign, rationale, color, idx):
         f'</div></div></div>',
         unsafe_allow_html=True,
     )
- 
- 
+
+
 def rule_card(ant, cons, confidence, lift, color):
     bar = min(int(confidence * 100), 100)
     st.markdown(
@@ -477,11 +460,10 @@ def rule_card(ant, cons, confidence, lift, color):
         f'</div>',
         unsafe_allow_html=True,
     )
- 
- 
+
+
 # ── plotly theme helper ───────────────────────────────────────────────────────
 def theme(fig, height=None, **kw):
-    """Apply dark transparent theme. No xaxis/yaxis in base — pass them in kw if needed."""
     layout = dict(
         paper_bgcolor="rgba(0,0,0,0)",
         plot_bgcolor="rgba(0,0,0,0)",
@@ -495,8 +477,8 @@ def theme(fig, height=None, **kw):
     fig.update_xaxes(gridcolor=BORDER, zerolinecolor=BORDER, linecolor=BORDER)
     fig.update_yaxes(gridcolor=BORDER, zerolinecolor=BORDER, linecolor=BORDER)
     return fig
- 
- 
+
+
 # ── data loading ──────────────────────────────────────────────────────────────
 @st.cache_data(show_spinner="Loading data and building clusters...")
 def load_all():
@@ -509,22 +491,22 @@ def load_all():
     spend_cols  = [c for c in feature_cols if c.startswith("lifetime_spend_")]
     metrics     = find_optimal_k(X_scaled, k_range=range(2, 10))
     return df_eng, labels, X_pca, summary, profile, spend_cols, feature_cols, metrics
- 
- 
+
+
 @st.cache_data(show_spinner="Mining association rules per segment...")
 def load_rules(_df_eng, _labels):
     df_basket = load_basket(os.path.join(DATA_DIR, "customer_basket.csv"))
     cmap      = pd.Series(_labels, index=_df_eng["customer_id"].values)
     return rules_per_cluster(df_basket, cmap, min_support=0.01, min_confidence=0.25, min_lift=1.1)
- 
- 
+
+
 df_eng, labels, X_pca, summary, profile, spend_cols, feature_cols, metrics = load_all()
- 
+
 df_labeled           = df_eng.copy()
 df_labeled["cluster"]= labels
 df_labeled["Segment"]= [PERSONAS[l]["label"] for l in labels]
- 
- 
+
+
 # ── sidebar ───────────────────────────────────────────────────────────────────
 with st.sidebar:
     st.markdown(
@@ -543,27 +525,25 @@ with st.sidebar:
         f'33,038 customers<br>5 segments<br>K-Means + PCA<br>Apriori rules</div>',
         unsafe_allow_html=True,
     )
- 
- 
+
+
 # ══════════════════════════════════════════════════════════════════════════════
 # OVERVIEW
 # ══════════════════════════════════════════════════════════════════════════════
 if section == "Overview":
     page_header("Segment Overview",
                 "Five customer groups identified via K-Means clustering on demographic and lifetime spend features.")
- 
-    # ── segment cards ──
+
     cols = st.columns(5, gap="small")
     for cid, col in enumerate(cols):
         with col:
             segment_card_overview(cid, summary.loc[cid], PERSONAS[cid])
- 
+
     st.markdown("<br>", unsafe_allow_html=True)
- 
-    # ── PCA + size ──
+
     subsection_header("Customer Distribution", "Each point is one customer projected onto 2 principal components.")
     left, right = st.columns([3, 2], gap="large")
- 
+
     with left:
         chart_card_open("PCA 2D projection  —  colour = segment")
         df_plot = pd.DataFrame({
@@ -585,7 +565,7 @@ if section == "Overview":
                           font=dict(size=11), bgcolor="rgba(0,0,0,0)"))
         st.plotly_chart(fig, use_container_width=True, config={"displayModeBar": False})
         chart_card_close()
- 
+
     with right:
         chart_card_open("Customers per segment")
         sizes = pd.DataFrame({
@@ -606,8 +586,7 @@ if section == "Overview":
                          zerolinecolor=BORDER, linecolor=BORDER))
         st.plotly_chart(fig2, use_container_width=True, config={"displayModeBar": False})
         chart_card_close()
- 
-    # ── spend heatmap ──
+
     subsection_header("Category Spend Heatmap", "Average lifetime spend per category (EUR). Darker = higher.")
     chart_card_open()
     heat = profile[spend_cols].copy()
@@ -631,27 +610,25 @@ if section == "Overview":
     fig3.update_traces(textfont_size=11)
     st.plotly_chart(fig3, use_container_width=True, config={"displayModeBar": False})
     chart_card_close()
- 
- 
+
+
 # ══════════════════════════════════════════════════════════════════════════════
 # METHODOLOGY
 # ══════════════════════════════════════════════════════════════════════════════
 elif section == "Methodology":
     page_header("Methodology",
                 "Exploratory data analysis, feature engineering and cluster selection.")
- 
-    # ── dataset stats ──
+
     subsection_header("Dataset at a Glance")
     m1, m2, m3, m4 = st.columns(4, gap="small")
     m1.metric("Customers",          f"{len(df_eng):,}")
     m2.metric("Features used",      str(len(feature_cols)))
     m3.metric("Avg missing values", f"{round(df_eng[feature_cols].isnull().mean().mean()*100,1)}%")
     m4.metric("Segments selected",  "5")
- 
-    # ── EDA charts ──
+
     subsection_header("Exploratory Analysis", "Spend patterns and demographic distribution across segments.")
     left, right = st.columns(2, gap="large")
- 
+
     with left:
         chart_card_open("Spend by category  —  log scale")
         spend_long = (
@@ -673,7 +650,7 @@ elif section == "Methodology":
               yaxis=dict(gridcolor=BORDER, zerolinecolor=BORDER, linecolor=BORDER))
         st.plotly_chart(fig4, use_container_width=True, config={"displayModeBar": False})
         chart_card_close()
- 
+
     with right:
         chart_card_open("Age vs household size by segment")
         fig5 = px.scatter(
@@ -687,8 +664,7 @@ elif section == "Methodology":
                           bgcolor="rgba(0,0,0,0)"))
         st.plotly_chart(fig5, use_container_width=True, config={"displayModeBar": False})
         chart_card_close()
- 
-    # ── cluster selection ──
+
     subsection_header("Cluster Selection", "Elbow and silhouette analysis used to select k = 5.")
     chart_card_open()
     fig6 = make_subplots(rows=1, cols=2,
@@ -717,7 +693,7 @@ elif section == "Methodology":
     fig6.update_annotations(font_color=MUTED)
     st.plotly_chart(fig6, use_container_width=True, config={"displayModeBar": False})
     chart_card_close()
- 
+
     st.markdown(
         f'<div style="background:{SURFACE};border:1px solid {BORDER};'
         f'border-left:3px solid {ACCENT};border-radius:0 8px 8px 0;'
@@ -732,8 +708,7 @@ elif section == "Methodology":
         f'Features were standardised with StandardScaler; missing values imputed by column median.</p></div>',
         unsafe_allow_html=True,
     )
- 
-    # ── promotion sensitivity ──
+
     subsection_header("Promotion Sensitivity", "Fraction of basket purchased on promotion, broken down by segment.")
     chart_card_open()
     fig7 = px.box(
@@ -748,14 +723,14 @@ elif section == "Methodology":
           yaxis=dict(gridcolor=BORDER, zerolinecolor=BORDER, linecolor=BORDER))
     st.plotly_chart(fig7, use_container_width=True, config={"displayModeBar": False})
     chart_card_close()
- 
- 
+
+
 # ══════════════════════════════════════════════════════════════════════════════
 # SEGMENT EXPLORER
 # ══════════════════════════════════════════════════════════════════════════════
 elif section == "Segment Explorer":
     page_header("Segment Explorer", "Deep-dive into a single segment's profile and behaviour.")
- 
+
     selected = st.selectbox(
         "Select segment",
         options=list(range(5)),
@@ -764,8 +739,7 @@ elif section == "Segment Explorer":
     p     = PERSONAS[selected]
     color = p["color"]
     row   = summary.loc[selected]
- 
-    # ── segment identity card ──
+
     st.markdown(
         f'<div style="background:{SURFACE};border:1px solid {BORDER};'
         f'border-left:4px solid {color};border-radius:0 10px 10px 0;'
@@ -777,8 +751,7 @@ elif section == "Segment Explorer":
         f'</div>',
         unsafe_allow_html=True,
     )
- 
-    # ── KPI strip ──
+
     subsection_header("Key Metrics")
     k1, k2, k3, k4, k5, k6 = st.columns(6, gap="small")
     k1.metric("Customers",          f"{int(row['size']):,}",  f"{row['pct']:.1f}% of total")
@@ -787,17 +760,16 @@ elif section == "Segment Explorer":
     k4.metric("Avg Children",       f"{row['total_children']:.1f}")
     k5.metric("Avg Tenure",         f"{row['tenure_years']:.1f} yrs")
     k6.metric("Avg Complaints",     f"{row['number_complaints']:.2f}")
- 
-    # ── spend + radar ──
+
     subsection_header("Spend Profile", "How this segment's category spend compares to the global average.")
     col_a, col_b = st.columns(2, gap="large")
- 
+
     with col_a:
         chart_card_open("Spend breakdown vs global average")
         global_spend = profile[spend_cols].mean()
         seg_spend    = profile.loc[selected, spend_cols]
         cats = [c.replace("lifetime_spend_", "").replace("_", " ").title() for c in spend_cols]
- 
+
         fig8 = go.Figure()
         fig8.add_trace(go.Bar(
             y=cats, x=global_spend.values, orientation="h",
@@ -816,7 +788,7 @@ elif section == "Segment Explorer":
                          zerolinecolor=BORDER, linecolor=BORDER))
         st.plotly_chart(fig8, use_container_width=True, config={"displayModeBar": False})
         chart_card_close()
- 
+
     with col_b:
         chart_card_open("Radar  —  this segment vs all others")
         norm = profile[spend_cols].copy()
@@ -824,7 +796,7 @@ elif section == "Segment Explorer":
             rng = norm[c].max() - norm[c].min()
             norm[c] = (norm[c] - norm[c].min()) / (rng + 1e-9)
         cats_r = [c.replace("lifetime_spend_", "").replace("_", " ").title() for c in spend_cols]
- 
+
         fig9 = go.Figure()
         for cid in range(5):
             vals = norm.loc[cid, spend_cols].tolist() + [norm.loc[cid, spend_cols].tolist()[0]]
@@ -835,8 +807,7 @@ elif section == "Segment Explorer":
                 opacity=1.0 if is_sel else 0.22,
                 line=dict(width=2.5 if is_sel else 1, color=PERSONAS[cid]["color"]),
                 fill="toself" if is_sel else "none",
-                fillcolor=color + "15" if is_sel else "rgba(0,0,0,0)",
-            ))
+                fillcolor="rgba(88,166,255,0.08)" if is_sel else "rgba(0,0,0,0)"))
         fig9.update_layout(
             paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
             font=dict(family="IBM Plex Sans, sans-serif", color=TEXT, size=12),
@@ -853,8 +824,7 @@ elif section == "Segment Explorer":
         )
         st.plotly_chart(fig9, use_container_width=True, config={"displayModeBar": False})
         chart_card_close()
- 
-    # ── distributions ──
+
     subsection_header("Feature Distributions", "Violin plots show shape, median and IQR across all segments.")
     feat_map = {
         "Total Lifetime Spend":      "total_spend",
@@ -866,7 +836,7 @@ elif section == "Segment Explorer":
     }
     feat_choice = st.selectbox("Feature", list(feat_map.keys()), label_visibility="collapsed")
     feat_col    = feat_map[feat_choice]
- 
+
     chart_card_open()
     fig10 = px.violin(
         df_labeled, x="Segment", y=feat_col, color="Segment",
@@ -879,18 +849,18 @@ elif section == "Segment Explorer":
           yaxis=dict(gridcolor=BORDER, zerolinecolor=BORDER, linecolor=BORDER))
     st.plotly_chart(fig10, use_container_width=True, config={"displayModeBar": False})
     chart_card_close()
- 
- 
+
+
 # ══════════════════════════════════════════════════════════════════════════════
 # CAMPAIGNS
 # ══════════════════════════════════════════════════════════════════════════════
 elif section == "Campaigns":
     page_header("Targeted Campaigns",
                 "Promotions grounded in basket association rules, tailored per segment.")
- 
+
     with st.spinner("Mining association rules..."):
         cluster_rules = load_rules(df_eng, labels)
- 
+
     selected = st.selectbox(
         "Select segment",
         options=list(range(5)),
@@ -898,19 +868,19 @@ elif section == "Campaigns":
     )
     p     = PERSONAS[selected]
     color = p["color"]
- 
+
     st.markdown(
         f'<div style="margin:0.4rem 0 1.4rem">{pill(p["label"], color, p["bg"])}</div>',
         unsafe_allow_html=True,
     )
- 
+
     camp_col, rules_col = st.columns(2, gap="large")
- 
+
     with camp_col:
         subsection_header("Recommended Campaigns")
         for i, (campaign, rationale) in enumerate(p["campaigns"], 1):
             campaign_card(campaign, rationale, color, i)
- 
+
     with rules_col:
         subsection_header("Top Association Rules")
         rules = cluster_rules.get(selected, pd.DataFrame())
@@ -920,14 +890,14 @@ elif section == "Campaigns":
             for _, r in rules.head(8).iterrows():
                 rule_card(r["antecedents_str"], r["consequents_str"],
                           r["confidence"], r["lift"], color)
- 
+
     if not rules.empty:
         subsection_header("Rule Map", "Each bubble is one rule. X = confidence, Y = lift, size = support.")
         chart_card_open()
         fig11 = px.scatter(
             rules.head(60), x="confidence", y="lift", size="support",
             color="lift",
-            color_continuous_scale=[[0, BORDER], [0.5, color + "99"], [1, color]],
+            color_continuous_scale=[[0, "#30363d"], [0.5, "#3d7fc0"], [1, "#58a6ff"]],
             hover_data={"antecedents_str": True, "consequents_str": True,
                         "support": ":.4f", "confidence": ":.3f", "lift": ":.2f"},
             labels={"confidence": "Confidence", "lift": "Lift"},
@@ -938,15 +908,15 @@ elif section == "Campaigns":
                                       tickfont=dict(size=10, color=MUTED)))
         st.plotly_chart(fig11, use_container_width=True, config={"displayModeBar": False})
         chart_card_close()
- 
- 
+
+
 # ══════════════════════════════════════════════════════════════════════════════
 # CUSTOMER LOOKUP
 # ══════════════════════════════════════════════════════════════════════════════
 elif section == "Customer Lookup":
     page_header("Customer Lookup",
                 "Retrieve the segment assignment and profile for any individual customer.")
- 
+
     subsection_header("Search")
     id_col, _ = st.columns([1, 2])
     with id_col:
@@ -958,7 +928,7 @@ elif section == "Customer Lookup":
             step=1,
         )
         lookup_btn = st.button("Look up customer")
- 
+
     if lookup_btn:
         row = df_labeled[df_labeled["customer_id"] == customer_id]
         if row.empty:
@@ -968,7 +938,7 @@ elif section == "Customer Lookup":
             cid   = int(r["cluster"])
             p     = PERSONAS[cid]
             color = p["color"]
- 
+
             subsection_header("Segment Assignment")
             st.markdown(
                 f'<div style="background:{SURFACE};border:1px solid {BORDER};'
@@ -989,22 +959,22 @@ elif section == "Customer Lookup":
             k3.metric("Tenure",         f"{r['tenure_years']:.0f} yrs")
             k4.metric("Children",       f"{r['total_children']:.0f}")
             k5.metric("Complaints",     f"{r['number_complaints']:.0f}")
- 
+
             subsection_header("Recommended Promotions")
             for i, (campaign, rationale) in enumerate(p["campaigns"], 1):
                 campaign_card(campaign, rationale, color, i)
- 
+
     st.markdown("<hr>", unsafe_allow_html=True)
     subsection_header("Export")
-    assignment_df = df_labeled[["customer_id", "cluster", "Segment"]].rename(
-        columns={"Segment": "segment_label"}
-    )
-    csv = assignment_df.to_csv(index=False).encode()
+    
+    # Requirement: Deliver a csv file with each customer_id and its proposed cluster.
+    assignment_df = df_labeled[["customer_id", "cluster"]].copy()
+    csv = assignment_df.to_csv(index=False).encode('utf-8')
+    
     st.download_button("Download customer_clusters.csv", csv,
                        "customer_clusters.csv", "text/csv")
     st.markdown(
         f'<p style="font-size:0.74rem;color:{MUTED};margin-top:0.4rem">'
-        f'{len(assignment_df):,} customers — columns: customer_id, cluster (0-4), segment_label</p>',
+        f'{len(assignment_df):,} customers — columns: customer_id, cluster</p>',
         unsafe_allow_html=True,
     )
- 

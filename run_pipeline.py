@@ -22,7 +22,7 @@ DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 OUT_DIR = os.path.join(os.path.dirname(__file__), "outputs")
 os.makedirs(OUT_DIR, exist_ok=True)
 
-N_CLUSTERS = 4   # optimal k determined from elbow + silhouette analysis
+N_CLUSTERS = 5   # optimal k determined from elbow + silhouette analysis
 
 
 def main():
@@ -91,7 +91,7 @@ def main():
         "cluster": labels
     })
     assignment.to_csv(os.path.join(OUT_DIR, "customer_clusters.csv"), index=False)
-    print(f"\nCustomer cluster assignments saved → outputs/customer_clusters.csv")
+    print(f"\nCustomer cluster assignments saved -> outputs/customer_clusters.csv")
     print(f"Total customers: {len(assignment)}")
 
     print("\nPipeline complete. All outputs saved to /outputs/")
