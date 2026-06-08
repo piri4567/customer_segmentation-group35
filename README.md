@@ -1,4 +1,4 @@
-# Customer Segmentation
+# Customer Segmentation - Group 35
 **Machine Learning II · Nova IMS · Data Science Degree**
 
 ---
