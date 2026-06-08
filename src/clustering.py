@@ -54,6 +54,14 @@ SEGMENT_DEFINITIONS = {
                 "Upgrade mechanics match this segment's propensity for tech purchases and build "
                 "long-term stickiness.",
             ),
+            (
+                "Tech Tier Loyalty Programme — Bronze, Silver and Gold tiers based on annual electronics + gaming spend",
+                "Each tier unlocks escalating benefits: early access to product launches, "
+                "progressive discounts (5% / 10% / 15%) on tech purchases, and quarterly VIP "
+                "preview events. The defining trait of this segment is concentrated high-value "
+                "tech spending; a tiered programme converts that pattern into recurring, "
+                "predictable loyalty without offering blanket discounts.",
+            ),
         ],
     },
     "Budget-Conscious Shoppers": {
@@ -85,6 +93,14 @@ SEGMENT_DEFINITIONS = {
                 "Loyalty card double-points every Wednesday",
                 "Creates a recurring anchor visit day. The price-sensitive profile of this group "
                 "makes points rewards highly effective at building habitual visits.",
+            ),
+            (
+                "Price Match Promise — match any competitor price within 7 days and earn an extra 10% in loyalty points",
+                "These customers visit the highest number of distinct stores, signalling active "
+                "competitor price-checking. A formal price-match policy with a points bonus reframes "
+                "their cross-shopping behaviour into a reason to consolidate purchases with us. "
+                "Standard practice in modern grocery retail (Aldi, Walmart, Tesco) and directly "
+                "addresses the defining behaviour of the cluster.",
             ),
         ],
     },
@@ -118,6 +134,14 @@ SEGMENT_DEFINITIONS = {
                 "Creates habitual visit cadence and deepens loyalty to fresh produce — the category "
                 "where this segment already over-indexes.",
             ),
+            (
+                "Recipe of the Week — every Monday a featured recipe with all ingredients automatically discounted at checkout when the full set is in the basket",
+                "Combines the broad product diversity already characteristic of this segment with a "
+                "concrete reason to grow basket size. The auto-discount at checkout (triggered by the "
+                "complete ingredient set) is a proven mechanic used by Tesco UK and Carrefour. Builds "
+                "a recurring weekly anchor without requiring active promotional browsing from the "
+                "customer.",
+            ),
         ],
     },
     "High-Value Families": {
@@ -150,6 +174,14 @@ SEGMENT_DEFINITIONS = {
                 "A personalised milestone reward reinforces the emotional connection to the brand for "
                 "the most profitable and longest-tenured customers.",
             ),
+            (
+                "Family Box monthly subscription — curated pre-assembled basket combining groceries, meat, fish and hygiene at 10% off the aggregate, delivered on a scheduled day",
+                "These customers already buy broadly across categories every month. The Family Box "
+                "consolidates that natural multi-category purchasing into a single recurring "
+                "transaction, lowers acquisition cost (they would visit anyway), and adds a "
+                "convenience dimension that matches the time-pressured profile of large households "
+                "(average 3.8 children).",
+            ),
         ],
     },
     "Pet and Home Essentials": {
@@ -181,6 +213,14 @@ SEGMENT_DEFINITIONS = {
                 "Subscribe and Save: 10% off recurring pet food orders",
                 "The predictable, routine purchase pattern of this segment makes subscription "
                 "conversion straightforward and high-value for both parties.",
+            ),
+            (
+                "Pantry Auto-Refill — customer-defined subscription across pet food and hygiene with selectable cadence (monthly or bimonthly), 10% off, priority delivery, and cancel anytime",
+                "Extends the standard Subscribe and Save into a flexible bundle across the two "
+                "defining categories of this cluster. Customer-chosen cadence respects their "
+                "consumption rhythm rather than imposing a fixed schedule. Mirrors the Chewy and "
+                "Amazon Subscribe and Save mechanics, both proven at scale for routine-purchase "
+                "segments like this one.",
             ),
         ],
     },
