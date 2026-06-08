@@ -90,8 +90,19 @@ python report.py
 | File | Description |
 |---|---|
 | `outputs/customer_clusters.csv` | Every customer with their assigned cluster integer and segment name |
-| `customer_segmentation_report.pdf` | Executive report: EDA, segmentation, campaigns, recommendations |
+| **`app/`** | **Interactive React dashboard — primary deliverable** (see `app/README.md`). Replaces the static report with an interactive dashboard showing the segmentation results, cluster profiles, association rules and campaign creatives. |
+| `customer_segmentation_report.docx` | Alternative static report (kept as backup). The project brief accepts either a PDF report or a runnable application — we chose the application route. |
 | `src/*.py` | Modular, documented source code |
+
+### Running the app
+
+```bash
+cd app
+npm install
+npm run dev
+```
+
+Then open the URL printed by Vite (typically `http://localhost:5173`).
 
 ---
 

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { SEGMENTS, SEGMENT_BY_ID } from "../data/segments";
-import CampaignCard from "../components/CampaignCard";
+import CampaignCarousel from "../components/CampaignCarousel";
 import DataTable from "../components/DataTable";
 import { loadCSV } from "../utils/csv";
 
@@ -61,19 +61,10 @@ export default function Campaigns() {
         })}
       </div>
 
-      {/* Campaigns */}
+      {/* Hero carousel */}
       <div>
-        <h2 className="section-title">Campaigns for {active.name}</h2>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          {active.campaigns.map((c, i) => (
-            <CampaignCard
-              key={i}
-              campaign={c}
-              accentColor={active.color}
-              index={i}
-            />
-          ))}
-        </div>
+        <h2 className="section-title">Featured creatives</h2>
+        <CampaignCarousel segment={active} />
       </div>
 
       {/* Rules */}

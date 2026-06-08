@@ -2,6 +2,7 @@ import { useState } from "react";
 import { SEGMENTS } from "../data/segments";
 import SegmentCard from "../components/SegmentCard";
 import CampaignCard from "../components/CampaignCard";
+import SegmentSpendBars from "../components/charts/SegmentSpendBars";
 
 export default function Segments() {
   const [activeId, setActiveId] = useState(SEGMENTS[0].id);
@@ -74,6 +75,16 @@ export default function Segments() {
               <Stat label="Avg tenure" val={`${active.avgTenure} y`} />
             </div>
           </div>
+        </div>
+
+        {/* Spend profile chart */}
+        <div className="mt-8">
+          <h3 className="section-title">Where this segment spends</h3>
+          <p className="text-xs text-slate-500 mb-3">
+            Average lifetime spend per category — sorted, bar opacity reflects
+            magnitude relative to this segment's top category.
+          </p>
+          <SegmentSpendBars segmentId={active.id} />
         </div>
       </div>
 
