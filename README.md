@@ -109,6 +109,6 @@ python report.py
 
 ## Authors
 
-- Leonardo Sousa – 20241234  
-- Jaime Abreu – 20241235  
+- Leonardo Rodrigues Silva e Souza – 20241411
+- Jaime Abreu – 20241823
 - Afonso Fonseca – 20241781
