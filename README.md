@@ -143,6 +143,6 @@ Copy-Item outputs\*.png app\public\images\ -Force
 
 ## Authors
 
-- Leonardo Souza [20241411]
-- Jaime Abreu [20241823]
-- Afonso Fonseca [20241781]
+- Leonardo Rodrigues Silva e Souza
+- Jaime Abreu
+- Afonso Fonseca
