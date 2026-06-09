@@ -85,12 +85,7 @@ Then open the URL printed by Vite, usually:
 http://localhost:5173
 ```
 
-To create a production build:
-
-```bash
-npm run build
-npm run preview
-```
+That's it!
 
 ## Methodology
 
