@@ -12,11 +12,11 @@ The final deliverable is the interactive dashboard in `app/`.
 
 | Segment | Customers | Share | Avg Lifetime Spend |
 |---|---:|---:|---:|
-| High-Value Families | 6,950 | 21.0% | EUR 42,723 |
-| Core Everyday Shoppers | 13,451 | 40.7% | EUR 19,234 |
-| Pet and Home Essentials | 6,976 | 21.1% | EUR 17,323 |
-| Tech-Savvy Singles | 3,322 | 10.1% | EUR 23,744 |
-| Budget-Conscious Shoppers | 2,339 | 7.1% | EUR 10,613 |
+| High-Value Families | 6,950 | 21.0% |  42,723€ |
+| Core Everyday Shoppers | 13,451 | 40.7% | 19,234€ |
+| Pet and Home Essentials | 6,976 | 21.1% | 17,323€ |
+| Tech-Savvy Singles | 3,322 | 10.1% | 23,744€ |
+| Budget-Conscious Shoppers | 2,339 | 7.1% | 10,613€ |
 
 ## Repository Structure
 
